@@ -1,0 +1,32 @@
+[
+  {
+    "id": 101,
+    "title": "Cake Name Goes Here",
+    "image": "/category-slides/category1.jpg"
+  },
+  {
+    "id": 102,
+    "title": "Cake Name Goes Here",
+    "image": "/category-slides/category2.jpg"
+  },
+  {
+    "id": 103,
+    "title": "Cake Name Goes Here",
+    "image": "/category-slides/category3.jpg"
+  },
+  {
+    "id": 104,
+    "title": "Cake Name Goes Here",
+    "image": "/category-slides/category4.jpg"
+  },
+  {
+    "id": 105,
+    "title": "Cake Name Goes Here",
+    "image": "/category-slides/category5.jpg"
+  },
+  {
+    "id": 106,
+    "title": "Cake Name Goes Here",
+    "image": "/category-slides/category6.jpg"
+  }
+]
