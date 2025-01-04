@@ -141,7 +141,7 @@ export default function Menubar() {
                   ? "danger"
                   : "foreground"
               }
-              href="#"
+              href={menuItem.path}
               size="lg"
             >
               {menuItem.item}
@@ -171,7 +171,7 @@ export default function Menubar() {
                   ? "danger"
                   : "foreground"
               }
-              href="#"
+              href={menuItem.path}
               size="lg"
             >
               {menuItem.item}
