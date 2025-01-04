@@ -56,6 +56,24 @@ const CategorySection = () => {
         spaceBetween={30}
         modules={[Pagination]}
         className="mySwiper min-h-fit"
+        breakpoints={{
+          320: {
+            slidesPerView: 2.5, // For small screens (e.g., mobile)
+            spaceBetween: 10,
+          },
+          640: {
+            slidesPerView: 3, // For medium screens (e.g., tablets)
+            spaceBetween: 20,
+          },
+          1024: {
+            slidesPerView: 4, // For large screens (e.g., laptops)
+            spaceBetween: 30,
+          },
+          // 1440: {
+          //   slidesPerView: 4, // For extra-large screens (e.g., desktops)
+          //   spaceBetween: 40,
+          // },
+        }}
       >
         {categoryItems.map((categoryItem, index) => (
           <SwiperSlide key={index}>
