@@ -7,7 +7,7 @@ import React from "react";
 const SignupPage = () => {
   return (
     <div className="p-2 flex items-center justify-center min-h-screen">
-      <div className="m-auto border-2 p-2 w-96">
+      <form className="m-auto border-2 p-2 w-96">
         <div className="p-2 flex flex-col">
           <p className="text-center font-bold text-2xl mb-4">Signup</p>
           <div>
@@ -28,7 +28,7 @@ const SignupPage = () => {
             Signup
           </Button>
         </div>
-      </div>
+      </form>
     </div>
   );
 };

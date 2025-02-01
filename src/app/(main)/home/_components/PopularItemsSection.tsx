@@ -1,21 +1,21 @@
 "use client";
 import SectionText from "@/components/SectionText";
-import React, { useEffect, useState } from "react";
 import PopularItemsList from "./PopularItemsList";
+import { useShowMenuItem } from "@/hooks/custom/menuQuery";
 
 const PopularItemsSection = () => {
-  const [popularMenu, setPopularMenu] = useState([]);
-  useEffect(() => {
-    fetch("allCakes.json")
-      .then((res) => res.json())
-      .then((data) => setPopularMenu(data));
-  }, []);
+  const { showMenuItem } = useShowMenuItem();
+  console.log(showMenuItem.data);
+
   return (
     <section>
       <SectionText sectionHeader="Popular Items"></SectionText>
       <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
-        {popularMenu.map((popular, index) => (
-          <PopularItemsList key={index} popular={popular}></PopularItemsList>
+        {showMenuItem.data?.map((popularItem, index) => (
+          <PopularItemsList
+            key={index}
+            popularItem={popularItem}
+          ></PopularItemsList>
         ))}
       </div>
     </section>
