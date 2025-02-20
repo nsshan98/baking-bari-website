@@ -8,11 +8,11 @@ import {
   NavbarMenuToggle,
   NavbarMenu,
   NavbarMenuItem,
-  Link,
   Button,
 } from "@nextui-org/react";
 import Image from "next/image";
 import logo from "../../public/logo.png";
+import Link from "next/link";
 
 export const AcmeLogo = () => {
   return <Image src={logo} alt="logo" width={60} height={60} />;
@@ -44,7 +44,7 @@ export default function Menubar() {
           className="sm:hidden"
         />
         <NavbarBrand>
-          <Link href="/">
+          <Link className="flex items-center" href="/">
             <AcmeLogo />
             <p className="font-bold text-inherit ml-2">Baking Bari</p>
           </Link>
@@ -64,7 +64,6 @@ export default function Menubar() {
                   : "foreground"
               }
               href={menuItem.path}
-              size="lg"
             >
               {menuItem.item}
             </Link>
@@ -94,7 +93,6 @@ export default function Menubar() {
                   : "foreground"
               }
               href={menuItem.path}
-              size="lg"
             >
               {menuItem.item}
             </Link>
