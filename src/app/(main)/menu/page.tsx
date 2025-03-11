@@ -1,5 +1,4 @@
 "use client";
-import { useCreateMenuItem } from "@/hooks/custom/menuQuery";
 import { axiosClient } from "@/lib/axiosClient";
 import { menuSchema, MenuSchemaType } from "@/schema-types/menu-types";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,11 +18,7 @@ export const menuTypes = [
 ];
 
 const MenuPage = () => {
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<MenuSchemaType>({
+  const { control, handleSubmit } = useForm<MenuSchemaType>({
     defaultValues: {
       menuname: "",
       menutype: "",
@@ -33,7 +28,6 @@ const MenuPage = () => {
 
   const image_upload_key = process.env.NEXT_PUBLIC_IMAGE_HOSTING_KEY;
   const imageUploadUrl = `https://api.imgbb.com/1/upload?key=${image_upload_key}`;
-  const { createMenuItem } = useCreateMenuItem();
 
   const onSubmit = async (data: MenuSchemaType) => {
     const imageList = { image: data.menuimage[0] };
