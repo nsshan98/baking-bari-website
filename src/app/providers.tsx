@@ -1,6 +1,5 @@
 // app/providers.tsx
 "use client";
-import { NextUIProvider } from "@nextui-org/react";
 
 import {
   isServer,
@@ -40,8 +39,6 @@ const queryClient = getQueryClient();
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <QueryClientProvider client={queryClient}>
-      <NextUIProvider>{children}</NextUIProvider>
-    </QueryClientProvider>
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 }

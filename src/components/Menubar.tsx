@@ -10,13 +10,13 @@ export default function Menubar() {
       item: "Home",
       path: "/",
     },
-    // {
-    //   item: "About",
-    //   path: "/about",
-    // },
     {
       item: "Menu",
       path: "/menu",
+    },
+    {
+      item: "Dashboard",
+      path: "/dashboard",
     },
   ];
 
