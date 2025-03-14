@@ -1,10 +1,12 @@
-import DashobardNavigation from "@/components/DashobardNavigation";
-import React from "react";
+import DashboardNavigation from "@/components/DashboardNavigation";
+import React, { ReactNode } from "react";
 
-const DashboardLayout = () => {
+const DashboardLayout = ({ children }: { children: ReactNode }) => {
   return (
     <div>
-      <DashobardNavigation />
+      <DashboardNavigation>
+        {children}
+      </DashboardNavigation>
     </div>
   );
 };
