@@ -9,13 +9,14 @@ import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 const LoginPage = () => {
-  const { control, handleSubmit } = useForm<UserLoginSchemaTypes>({
+  const { control, handleSubmit, formState: { isSubmitting, errors } } = useForm<UserLoginSchemaTypes>({
     defaultValues: {
       email: '',
       password: ''
     },
     resolver: zodResolver(userLoginSchema)
   })
+
 
 
   const onSubmit = async (values: UserLoginSchemaTypes) => {
@@ -36,6 +37,7 @@ const LoginPage = () => {
       toast.error('Something went wrong')
       console.log(error)
     }
+    console.log(errors)
   }
 
 
@@ -50,9 +52,10 @@ const LoginPage = () => {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             render={({ field: { ref, ...field }, fieldState: { error } }) => (
               <div>
-                <InputBox label={"Email"} type={"email"} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                <InputBox label={"Email"} type={"email"} required={true} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   field.onChange(e.target.value)
-                }} />
+                }}
+                />
               </div>
             )}
           />
@@ -62,7 +65,7 @@ const LoginPage = () => {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             render={({ field: { ref, ...field }, fieldState: { error } }) => (
               <div>
-                <InputBox label={"Password"} type={"password"} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                <InputBox label={"Password"} type={"password"} required={true} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   field.onChange(e.target.value)
                 }} />
               </div>
@@ -76,7 +79,7 @@ const LoginPage = () => {
               <p className="text-blue-800">Wanna Join?</p>
             </Link>
           </div>
-          <button className="btn btn-success">Login</button>
+          <button disabled={isSubmitting} className="btn btn-success"><span style={{ display: isSubmitting ? 'block' : 'none' }} className="loading loading-spinner text-succes"></span>Login</button>
         </div>
       </form>
     </div>

@@ -6,16 +6,18 @@ import {
   UserSignUpSchemaTypes,
 } from "@/schema-types/user-type";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { isAxiosError } from "axios";
 import Link from "next/link";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 const SignupPage = () => {
   const { userSignUp } = useUserSignUp();
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { isSubmitting, errors },
   } = useForm<UserSignUpSchemaTypes>({
     defaultValues: {
       fullname: "",
@@ -28,8 +30,14 @@ const SignupPage = () => {
   const onSubmit = async (payload: UserSignUpSchemaTypes) => {
     userSignUp.mutate(payload, {
       onSuccess: (response) => {
-        console.log(response);
+        console.log(response)
+        toast.success(response?.message)
       },
+      onError: (error) => {
+        if (isAxiosError(error)) {
+          toast.error(error.response?.data.error)
+        }
+      }
     });
     console.log(payload);
   };
@@ -48,7 +56,7 @@ const SignupPage = () => {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             render={({ field: { ref, ...field }, fieldState: { error } }) => (
               <div>
-                <InputBox label={"Name"} type={"text"} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                <InputBox label={"Name"} type={"text"} required={true} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   field.onChange(e.target.value)
                 }} />
               </div>
@@ -60,7 +68,7 @@ const SignupPage = () => {
               control={control}
               // eslint-disable-next-line @typescript-eslint/no-unused-vars
               render={({ field: { ref, ...field }, fieldState: { error } }) => (
-                <InputBox label={"Email"} type={"email"} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                <InputBox label={"Email"} type={"email"} required={true} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   field.onChange(e.target.value)
                 }} />
               )}
@@ -73,7 +81,7 @@ const SignupPage = () => {
               // eslint-disable-next-line @typescript-eslint/no-unused-vars
               render={({ field: { ref, ...field }, fieldState: { error } }) => (
                 <div>
-                  <InputBox label={"Password"} type={"password"} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  <InputBox label={"Password"} type={"password"} required={true} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     field.onChange(e.target.value)
                   }} />
                 </div>
@@ -86,7 +94,7 @@ const SignupPage = () => {
             </Link>
           </div>
 
-          <button className="btn btn-success">Signup</button>
+          <button disabled={isSubmitting} className="btn btn-success"><span style={{ display: isSubmitting ? 'block' : 'none' }} className="loading loading-spinner text-succes"></span>Signup</button>
 
         </div>
       </form>
