@@ -4,6 +4,7 @@ import "./globals.css";
 import { Providers } from "./providers";
 import Footer from "@/components/Footer";
 import Menubar from "@/components/Menubar";
+import { ToastContainer } from 'react-toastify';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,6 +40,7 @@ export default function RootLayout({
             <footer className="fixed bottom-0 right-0 left-0 flex-shrink-0">
               <Footer />
             </footer>
+            <ToastContainer pauseOnFocusLoss={false} />
           </Providers>
         </div>
       </body>

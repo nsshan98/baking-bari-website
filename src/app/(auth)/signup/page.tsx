@@ -6,7 +6,6 @@ import {
   UserSignUpSchemaTypes,
 } from "@/schema-types/user-type";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@nextui-org/react";
 import Link from "next/link";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -16,7 +15,7 @@ const SignupPage = () => {
   const {
     control,
     handleSubmit,
-    // formState: { errors },
+    formState: { errors },
   } = useForm<UserSignUpSchemaTypes>({
     defaultValues: {
       fullname: "",
@@ -26,16 +25,17 @@ const SignupPage = () => {
     resolver: zodResolver(userSignUpSchema),
   });
 
-  const onSubmit = async (data) => {
-    userSignUp.mutate(data, {
+  const onSubmit = async (payload: UserSignUpSchemaTypes) => {
+    userSignUp.mutate(payload, {
       onSuccess: (response) => {
         console.log(response);
       },
     });
-    console.log(data);
+    console.log(payload);
   };
+  console.log(errors)
   return (
-    <div className="p-2 flex items-center justify-center min-h-screen">
+    <div className="p-2">
       <form
         className="m-auto border-2 p-2 w-96"
         onSubmit={handleSubmit(onSubmit)}
@@ -47,13 +47,11 @@ const SignupPage = () => {
             control={control}
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             render={({ field: { ref, ...field }, fieldState: { error } }) => (
-              <InputBox
-                {...field}
-                label={"Name"}
-                type={"text"}
-                isInvalid={!!error}
-                errorMessage={error?.message}
-              />
+              <div>
+                <InputBox label={"Name"} type={"text"} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  field.onChange(e.target.value)
+                }} />
+              </div>
             )}
           />
           <div>
@@ -62,13 +60,9 @@ const SignupPage = () => {
               control={control}
               // eslint-disable-next-line @typescript-eslint/no-unused-vars
               render={({ field: { ref, ...field }, fieldState: { error } }) => (
-                <InputBox
-                  {...field}
-                  label={"Email"}
-                  type={"email"}
-                  isInvalid={!!error}
-                  errorMessage={error?.message}
-                />
+                <InputBox label={"Email"} type={"email"} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  field.onChange(e.target.value)
+                }} />
               )}
             />
           </div>
@@ -78,13 +72,11 @@ const SignupPage = () => {
               control={control}
               // eslint-disable-next-line @typescript-eslint/no-unused-vars
               render={({ field: { ref, ...field }, fieldState: { error } }) => (
-                <InputBox
-                  {...field}
-                  label={"Password"}
-                  type={"password"}
-                  isInvalid={!!error}
-                  errorMessage={error?.message}
-                />
+                <div>
+                  <InputBox label={"Password"} type={"password"} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    field.onChange(e.target.value)
+                  }} />
+                </div>
               )}
             />
           </div>
@@ -93,9 +85,9 @@ const SignupPage = () => {
               <p className="text-blue-800">Already Have An Account?</p>
             </Link>
           </div>
-          <Button type="submit" className="w-1/3 m-auto" color="success">
-            Signup
-          </Button>
+
+          <button className="btn btn-success">Signup</button>
+
         </div>
       </form>
     </div>

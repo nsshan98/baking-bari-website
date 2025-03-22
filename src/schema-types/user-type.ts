@@ -6,4 +6,11 @@ export const userSignUpSchema = z.object({
     password: z.string().min(4, { message: 'Minimum 4' })
 })
 
+export const userLoginSchema = z.object({
+    email: z.string().email({ message: 'Email Required' }),
+    password: z.string().min(4, { message: 'Minimum 4' })
+})
+
+
 export type UserSignUpSchemaTypes = z.infer<typeof userSignUpSchema>
+export type UserLoginSchemaTypes = z.infer<typeof userLoginSchema>

@@ -2,16 +2,21 @@
 
 type InputBoxProps = {
   type: string;
+  label: string
+  value?: string,
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
 };
 
-const InputBox = ({ type, ...props }: InputBoxProps) => {
+const InputBox = ({ type, label, value, onChange, ...props }: InputBoxProps) => {
   return (
-    <div className="w-full flex flex-col gap-4 pb-4">
-      <div className="input input-bordered w-full">
-        <input type={type} {...props} />
-      </div>
+    <div className="pb-1">
+      <label className="label">
+        <span className="label-text">{label}</span>
+      </label>
+      <input type={type} value={value} onChange={onChange} {...props} className="input input-bordered w-full" />
     </div>
   );
 };
 
 export default InputBox;
+
