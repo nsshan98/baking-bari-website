@@ -3,8 +3,13 @@ import React from "react";
 import Image from "next/image";
 import logo from "../../public/logo.png";
 import Link from "next/link";
+import UsersOptions from "./UsersOptions";
+import { Session } from "next-auth";
 
-export default function Menubar() {
+const Menubar = ({ session }: { session: Session }) => {
+  // const session = await auth()
+  console.log(session);
+
   const menuItems = [
     {
       item: "Home",
@@ -66,13 +71,22 @@ export default function Menubar() {
         </ul>
       </div>
       <div className="navbar-end flex gap-4">
-        <Link className="btn" href="/signup">
-          Sign Up
-        </Link>
-        <Link className="btn" href="/login">
-          Login
-        </Link>
+        {session?.user ? (
+          <div>
+            <UsersOptions />
+          </div>
+        ) : (
+          <div className="flex gap-2">
+            <Link className="btn" href="/signup">
+              Sign Up
+            </Link>
+            <Link className="btn" href="/login">
+              Login
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );
-}
+};
+export default Menubar;

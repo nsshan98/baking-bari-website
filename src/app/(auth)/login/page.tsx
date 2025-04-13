@@ -4,11 +4,14 @@ import InputBox from "@/components/ui/InputBox";
 import { userLoginSchema, UserLoginSchemaTypes } from "@/schema-types/user-type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 const LoginPage = () => {
+  const router = useRouter()
+
   const { control, handleSubmit, formState: { isSubmitting, errors } } = useForm<UserLoginSchemaTypes>({
     defaultValues: {
       email: '',
@@ -31,6 +34,7 @@ const LoginPage = () => {
       }
       else {
         toast.success('Succesfully login')
+        router.push('/dashboard')
 
       }
     } catch (error) {
