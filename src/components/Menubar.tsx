@@ -8,7 +8,7 @@ import { Session } from "next-auth";
 
 const Menubar = ({ session }: { session: Session }) => {
   // const session = await auth()
-  console.log(session);
+  // console.log(session);
 
   const menuItems = [
     {

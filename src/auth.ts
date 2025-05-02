@@ -7,16 +7,11 @@ import { JWT } from "next-auth/jwt";
 
 async function refreshAccessToken(token: JWT): Promise<JWT> {
     try {
-        const response = await axios.post(`${process.env.NEXT_PUBLIC_API}/refresh`, {
+        const { data: newTokens } = await axios.post(`${process.env.NEXT_PUBLIC_API}/refresh`, {
             refreshToken: token.refreshToken
         })
 
-        const newTokens = await response.json()
-
-        if (!!response.ok) {
-
-        }
-
+        console.log(newTokens.data, 'NewTokens')
         return {
             ...token,
             accessToken: newTokens.accessToken,
@@ -47,7 +42,7 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
                         email: credentials?.email,
                         password: credentials?.password,
                     }
-                    const res = await axios.post(url, payload)
+                    const res = await axios.post(url, payload, { withCredentials: true })
                     console.log(res.data, 'User')
                     return { accessToken: res.data?.accessToken, refreshToken: res.data?.refreshToken, ...res.data.userInfo, };
 
@@ -67,12 +62,12 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
 
             if (token.accessToken) {
                 const decodedToken = jwtDecode(token.accessToken)
-                console.log(decodedToken, 'DecodedToken')
+                // console.log(decodedToken, 'DecodedToken')
                 token.accessTokenExpires = decodedToken?.exp * 1000
             }
 
             if (Date.now() < token.accessTokenExpires) {
-                console.log('Return Previous Token')
+                // console.log('Return Previous Token')
                 return token
             }
 

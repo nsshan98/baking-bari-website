@@ -1,8 +1,11 @@
 "use client";
+import { axiosClient } from "@/lib/axiosClient";
 import { categorySchema, CategorySchemaType } from "@/schema-types/category-types";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 const AddCategory = () => {
     const openModel = () => {
         const modal = document.getElementById('my_modal_3') as HTMLDialogElement
@@ -20,9 +23,26 @@ const AddCategory = () => {
         resolver: zodResolver(categorySchema),
     });
 
-    const onSubmit = (data: CategorySchemaType) => {
-        console.log(data)
-    }
+    const image_upload_key = process.env.NEXT_PUBLIC_IMAGE_HOSTING_KEY;
+    const imageUploadUrl = `https://api.imgbb.com/1/upload?key=${image_upload_key}`;
+
+    const onSubmit = async (data: CategorySchemaType) => {
+        const imageList = { image: data.category_image };
+        const res = await axios.post(imageUploadUrl, imageList, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
+        if (res.status === 200) {
+            const categoryItem = {
+                category_name: data.category_name,
+                category_type: data.category_type,
+                category_image: res.data.data.display_url,
+            };
+            await axiosClient.post("/create-category", categoryItem);
+            toast.success("Category Created Successfully")
+        }
+    };
     return (
         <div>
             <button className="btn" onClick={openModel}>Add Category</button>
