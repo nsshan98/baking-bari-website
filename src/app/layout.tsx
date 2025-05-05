@@ -30,7 +30,7 @@ export default async function RootLayout({
 }>) {
   const session = await auth()
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning={true}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
@@ -40,7 +40,7 @@ export default async function RootLayout({
               <Menubar session={session as Session} />
             </header>
             <main className="flex-grow">{children}</main>
-            <footer className="fixed bottom-0 right-0 left-0 flex-shrink-0">
+            <footer>
               <Footer />
             </footer>
             <ToastContainer pauseOnFocusLoss={false} />
