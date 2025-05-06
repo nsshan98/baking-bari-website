@@ -1,6 +1,6 @@
 import { axiosClient } from "@/lib/axiosClient";
 import { CategorySchemaType } from "@/schema-types/category-types";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 
 // Create a new category
@@ -26,4 +26,20 @@ const useShowCategories = () => {
     return { showCategories };
 };
 
-export { useCreateCategory, useShowCategories };
+// Delete a category
+const useDeleteCategory = () => {
+    const queryClient = useQueryClient()
+    const deleteCategory = useMutation({
+        mutationFn: async (categoryId: string) => {
+            return await axiosClient.delete(`/category/${categoryId}`)
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['categories']
+            })
+        }
+    })
+    return { deleteCategory };
+}
+
+export { useCreateCategory, useShowCategories, useDeleteCategory };
