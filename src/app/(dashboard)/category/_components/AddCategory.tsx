@@ -134,7 +134,6 @@ const AddCategory = () => {
                                                     }`}
                                                 onChange={(e) => {
                                                     const file = e.target.files?.[0];
-                                                    console.log(file)
                                                     onChange(file)
                                                 }}
                                             />

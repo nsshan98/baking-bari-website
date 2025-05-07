@@ -1,23 +1,28 @@
 "use client";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 import { MdEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
+import DeleteCategory from "./DeleteCategory";
 
 
-type CategoryGridProps = {
+type CategoryProps = {
     _id: string;
     category_name: string;
     category_type: string;
     category_image: string | File;
+    open: boolean;
 }
 
-const CategoryGrid = ({ category }: { category: CategoryGridProps }) => {
+const CategoryGrid = ({ category }: { category: CategoryProps }) => {
+    const [selectCategoryId, setSelectCategoryId] = useState<{
+        _id: string | null
+        openState: 'edit' | 'delete' | null
+    }>({ _id: null, openState: null })
+
     const { _id, category_name, category_type, category_image } = category
 
-    const handleDeleteCategory = () => {
-        console.log(_id)
-    }
+
     return (
         <div className="flex justify-between items-center bg-base-200 rounded-lg">
             <div className="p-2 flex gap-2 items-center justify-between">
@@ -38,11 +43,20 @@ const CategoryGrid = ({ category }: { category: CategoryGridProps }) => {
                     </div>
                 </div>
             </div>
+            {
+                selectCategoryId._id === _id && (
+                    <DeleteCategory category_id={_id} open={selectCategoryId.openState === 'delete'} onClose={() => {
+                        setSelectCategoryId({ _id: null, openState: null })
+                    }} />
+                )
+            }
             <div className="grid">
                 <button className="btn tooltip tooltip-left" data-tip="Edit">
                     <MdEdit size={20} />
                 </button>
-                <button onClick={handleDeleteCategory} className="btn tooltip tooltip-left" data-tip="Delete">
+                <button onClick={() => {
+                    setSelectCategoryId({ _id, openState: 'delete' })
+                }} className="btn tooltip tooltip-left" data-tip="Delete">
                     <MdDelete size={20} />
                 </button>
             </div>
