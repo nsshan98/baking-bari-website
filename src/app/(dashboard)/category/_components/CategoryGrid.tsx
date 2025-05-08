@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { MdEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 import DeleteCategory from "./DeleteCategory";
+import { useRouter } from "next/navigation";
 
 
 type CategoryProps = {
@@ -21,6 +22,7 @@ const CategoryGrid = ({ category }: { category: CategoryProps }) => {
     }>({ _id: null, openState: null })
 
     const { _id, category_name, category_type, category_image } = category
+    const router = useRouter()
 
 
     return (
@@ -51,7 +53,7 @@ const CategoryGrid = ({ category }: { category: CategoryProps }) => {
                 )
             }
             <div className="grid">
-                <button className="btn tooltip tooltip-left" data-tip="Edit">
+                <button onClick={() => router.push(`/category/${_id}`)} className="btn tooltip tooltip-left" data-tip="Edit">
                     <MdEdit size={20} />
                 </button>
                 <button onClick={() => {
