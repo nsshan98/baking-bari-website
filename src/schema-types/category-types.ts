@@ -4,9 +4,9 @@ const fileSizeLimit = 5 * 1024 * 1024
 
 export const categorySchema = z.object({
     category_name: z.string().min(1, { message: 'Category name is required' }),
-    category_type: z.string().optional(),
+    category_type: z.string().min(1, { message: 'Category type is required' }),
     category_image: z.union([
-        z.string().url(),
+        z.string().min(1, { message: 'Reqiured' }).url(),
         z
             .instanceof(File)
             .refine((file) =>
@@ -16,7 +16,7 @@ export const categorySchema = z.object({
             .refine((file) => file.size <= fileSizeLimit, {
                 message: 'File size should not exceed 5MB',
             }),
-    ]).optional()
+    ])
 })
 
 export type CategorySchemaType = z.infer<typeof categorySchema>

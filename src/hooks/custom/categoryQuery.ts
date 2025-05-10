@@ -42,6 +42,21 @@ const useDeleteCategory = () => {
     return { deleteCategory };
 }
 
+// Update a category
+const useUpdateCategory = (categoryId: string) => {
+    const queryClient = useQueryClient()
+    const updateCategory = useMutation({
+        mutationFn: async (data: { category_name: string }) => {
+            return await axiosClient.patch(`/category/${categoryId}`, data)
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['categories']
+            })
+        }
 
+    })
+    return { updateCategory };
+}
 
-export { useCreateCategory, useShowCategories, useDeleteCategory };
+export { useCreateCategory, useShowCategories, useDeleteCategory, useUpdateCategory };

@@ -1,24 +1,33 @@
 "use client";
-import { axiosClient } from "@/lib/axiosClient";
 import { categorySchema, CategorySchemaType } from "@/schema-types/category-types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import React from "react";
+import React, { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import { CiCircleRemove } from "react-icons/ci";
+import Image from "next/image";
+import { useUpdateCategory } from "@/hooks/custom/categoryQuery";
 
 type UpdateCategoryProps = {
     categories: {
+        _id: string
         category_name: string;
         category_type: string;
+        category_image: string;
     }
 }
 const UpdateCategory = ({ data }: { data: UpdateCategoryProps }) => {
     console.log(data)
+    const [previewImage, setPreviewImage] = useState<string | null>();
+    const fileRef = useRef<HTMLInputElement | null>(null);
+    const { updateCategory } = useUpdateCategory(data?.categories?._id);
+
     const { control, handleSubmit } = useForm<CategorySchemaType>({
         values: {
-            category_name: data.categories.category_name,
-            category_type: data.categories.category_type,
+            category_name: data?.categories?.category_name,
+            category_type: data?.categories?.category_type,
+            category_image: data?.categories?.category_image
         },
         resolver: zodResolver(categorySchema),
     });
@@ -33,15 +42,20 @@ const UpdateCategory = ({ data }: { data: UpdateCategoryProps }) => {
                 "Content-Type": "multipart/form-data",
             },
         });
-        if (res.status === 200) {
-            const categoryItem = {
-                category_name: data.category_name,
-                category_type: data.category_type,
-                category_image: res.data.data.display_url,
-            };
-            await axiosClient.post(`/category/`, categoryItem);
-            toast.success("Category Created Successfully")
-        }
+        console.log(res, 'img res')
+        // if (res.status === 200) {
+        const categoryItem = {
+            category_name: data.category_name,
+            category_type: data.category_type,
+            category_image: res.data.data.display_url,
+        };
+        updateCategory.mutate(categoryItem, {
+            onSuccess: () => {
+                console.log('Updated')
+            }
+        })
+        toast.success("Category Created Successfully")
+        // }
     };
     return (
         <div>
@@ -118,23 +132,76 @@ const UpdateCategory = ({ data }: { data: UpdateCategoryProps }) => {
                     </div>
 
                     <div className="form-control">
-                        <label className="label">Upload Images</label>
+                        <label className="label">Upload Image</label>
                         <Controller
                             name="category_image"
                             control={control}
                             render={({ field: { onChange }, fieldState: { error } }) => (
                                 <>
                                     <input
+                                        hidden
+                                        accept="image/*"
+                                        ref={fileRef}
                                         type="file"
                                         className={`file-input w-full ${error ? "border-red-500" : ""
                                             }`}
                                         onChange={(e) => {
                                             const file = e.target.files?.[0];
-                                            onChange(file)
+                                            if (file) {
+                                                setPreviewImage(URL.createObjectURL(file));
+                                                onChange(file);
+                                            }
                                         }}
                                     />
+
+                                    {previewImage ? (
+                                        <div className="avatar">
+                                            <div
+                                                onClick={() => fileRef?.current?.click()}
+                                                className="w-24 h-24 rounded mt-5 ring"
+                                            >
+                                                <Image
+                                                    src={previewImage || "https://placehold.co/10x10"}
+                                                    alt="preview"
+                                                    width={100}
+                                                    height={100}
+                                                />
+                                            </div>
+                                            <div>
+                                                <CiCircleRemove
+                                                    onClick={() => {
+                                                        setPreviewImage(null);
+                                                        onChange(null);
+                                                        if (fileRef.current) {
+                                                            fileRef.current.value = "";
+                                                        }
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div>
+                                            <div
+                                                onClick={() => fileRef?.current?.click()}
+                                                className="flex items-center justify-center w-24 h-full rounded ring mt-2"
+                                            >
+                                                <Image
+                                                    src={data.categories.category_image}
+                                                    alt="preview"
+                                                    width={100}
+                                                    height={100}
+                                                    priority
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
+
                                     {error && (
-                                        <span className="text-error">{error.message}</span>
+                                        <label className="label">
+                                            <span className="label-text-alt text-error">
+                                                {error.message}
+                                            </span>
+                                        </label>
                                     )}
                                 </>
                             )}

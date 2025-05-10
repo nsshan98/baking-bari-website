@@ -192,7 +192,11 @@ const AddCategory = () => {
                                             )}
 
                                             {error && (
-                                                <span className="text-error">{error.message}</span>
+                                                <label className="label">
+                                                    <span className="label-text-alt text-error">
+                                                        {error.message}
+                                                    </span>
+                                                </label>
                                             )}
                                         </>
                                     )}
