@@ -1,20 +1,29 @@
 "use client";
 import { axiosClient } from "@/lib/axiosClient";
-import { categorySchema, CategorySchemaType } from "@/schema-types/category-types";
+import {
+    categorySchema,
+    CategorySchemaType,
+} from "@/schema-types/category-types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import React from "react";
+import Image from "next/image";
+import React, { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import { CiCircleRemove } from "react-icons/ci";
+import { HiOutlineUpload } from "react-icons/hi";
+
 const AddCategory = () => {
+    const [previewImage, setPreviewImage] = useState<string | null>();
+    const fileRef = useRef<HTMLInputElement | null>(null);
     const openModel = () => {
-        const modal = document.getElementById('my_modal_3') as HTMLDialogElement
-        modal?.showModal()
-    }
+        const modal = document.getElementById("my_modal_3") as HTMLDialogElement;
+        modal?.showModal();
+    };
     const closeModel = () => {
-        const modal = document.getElementById('my_modal_3') as HTMLDialogElement
-        modal?.close()
-    }
+        const modal = document.getElementById("my_modal_3") as HTMLDialogElement;
+        modal?.close();
+    };
     const { control, handleSubmit } = useForm<CategorySchemaType>({
         defaultValues: {
             category_name: "",
@@ -40,18 +49,23 @@ const AddCategory = () => {
                 category_image: res.data.data.display_url,
             };
             await axiosClient.post("/create-category", categoryItem);
-            toast.success("Category Created Successfully")
+            toast.success("Category Created Successfully");
         }
     };
     return (
         <div>
-            <button className="btn" onClick={openModel}>Add Category</button>
+            <button className="btn" onClick={openModel}>
+                Add Category
+            </button>
             <dialog id="my_modal_3" className="modal">
                 <div className="modal-box">
-                    <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onClick={closeModel}>✕</button>
-                    <form
-                        onSubmit={handleSubmit(onSubmit)}
+                    <button
+                        className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+                        onClick={closeModel}
                     >
+                        ✕
+                    </button>
+                    <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="">
                             <h2 className="text-center font-bold text-2xl">
                                 Add New Category
@@ -102,12 +116,9 @@ const AddCategory = () => {
                                                 value={value || ""}
                                                 onChange={(e) => onChange(e.target.value)}
                                             >
-                                                <option value="">
-                                                    Select Category Type
-                                                </option>
+                                                <option value="">Select Category Type</option>
                                                 <option>Main Category</option>
                                                 <option>Side Category</option>
-
                                             </select>
                                             {error && (
                                                 <label className="label">
@@ -122,21 +133,64 @@ const AddCategory = () => {
                             </div>
 
                             <div className="form-control">
-                                <label className="label">Upload Images</label>
+                                <label className="label">Upload Image</label>
                                 <Controller
                                     name="category_image"
                                     control={control}
                                     render={({ field: { onChange }, fieldState: { error } }) => (
                                         <>
                                             <input
+                                                hidden
+                                                accept="image/*"
+                                                ref={fileRef}
                                                 type="file"
                                                 className={`file-input w-full ${error ? "border-red-500" : ""
                                                     }`}
                                                 onChange={(e) => {
                                                     const file = e.target.files?.[0];
-                                                    onChange(file)
+                                                    if (file) {
+                                                        setPreviewImage(URL.createObjectURL(file));
+                                                        onChange(file);
+                                                    }
                                                 }}
                                             />
+
+                                            {previewImage ? (
+                                                <div className="avatar">
+                                                    <div
+                                                        onClick={() => fileRef?.current?.click()}
+                                                        className="w-24 rounded mt-5 ring"
+                                                    >
+                                                        <Image
+                                                            src={previewImage || "https://placehold.co/10x10"}
+                                                            alt="preview"
+                                                            width={100}
+                                                            height={100}
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <CiCircleRemove
+                                                            onClick={() => {
+                                                                setPreviewImage(null);
+                                                                onChange(null);
+                                                                if (fileRef.current) {
+                                                                    fileRef.current.value = "";
+                                                                }
+                                                            }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div>
+                                                    <div
+                                                        onClick={() => fileRef?.current?.click()}
+                                                        className="flex items-center justify-center w-24 h-24 rounded ring"
+                                                    >
+                                                        <HiOutlineUpload className="text-6xl bg-slate-300 rounded-full p-3" />
+                                                    </div>
+                                                </div>
+                                            )}
+
                                             {error && (
                                                 <span className="text-error">{error.message}</span>
                                             )}
@@ -154,7 +208,7 @@ const AddCategory = () => {
                 </div>
             </dialog>
         </div>
-    )
-}
+    );
+};
 
-export default AddCategory
+export default AddCategory;
