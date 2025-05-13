@@ -28,6 +28,7 @@ const AddCategory = () => {
         defaultValues: {
             category_name: "",
             category_type: "",
+            category_tag: [],
         },
         resolver: zodResolver(categorySchema),
     });
@@ -47,9 +48,11 @@ const AddCategory = () => {
                 category_name: data.category_name,
                 category_type: data.category_type,
                 category_image: res.data.data.display_url,
+                category_tag: data.category_tag
             };
             await axiosClient.post("/create-category", categoryItem);
             toast.success("Category Created Successfully");
+            console.log(categoryItem);
         }
     };
     return (
@@ -202,6 +205,42 @@ const AddCategory = () => {
                                     )}
                                 />
                             </div>
+
+
+                            <div className="form-control">
+                                <Controller
+                                    name="category_tag"
+                                    control={control}
+                                    render={({ field, fieldState: { error } }) => (
+                                        <div className="form-control">
+                                            <label className="label">
+                                                <span className="label-text">Category Name</span>
+                                            </label>
+                                            <input
+                                                {...field}
+                                                className="checkbox"
+                                                type="checkbox"
+                                                value={"Test"}
+                                                checked={field.value.includes("Test")}
+                                                defaultChecked
+                                                onChange={(e) => {
+                                                    const value = e.currentTarget.checked ? [...field.value, e.currentTarget.value] : field.value.filter((value) => value !== e.currentTarget.value)
+                                                    field.onChange(value)
+                                                }}
+
+                                            />
+                                            {error && (
+                                                <label className="label">
+                                                    <span className="label-text-alt text-error">
+                                                        {error.message}
+                                                    </span>
+                                                </label>
+                                            )}
+                                        </div>
+                                    )}
+                                />
+                            </div>
+
 
                             {/* Submit Button */}
                             <button type="submit" className="btn btn-success w-full mt-5">

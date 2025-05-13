@@ -2,6 +2,8 @@ import { z } from "zod";
 
 const fileSizeLimit = 5 * 1024 * 1024
 
+const categoryTypes = z.array(z.string())
+
 export const categorySchema = z.object({
     category_name: z.string().min(1, { message: 'Category name is required' }),
     category_type: z.string().min(1, { message: 'Category type is required' }),
@@ -16,7 +18,8 @@ export const categorySchema = z.object({
             .refine((file) => file.size <= fileSizeLimit, {
                 message: 'File size should not exceed 5MB',
             }),
-    ])
+    ]),
+    category_tag: categoryTypes
 })
 
 export type CategorySchemaType = z.infer<typeof categorySchema>

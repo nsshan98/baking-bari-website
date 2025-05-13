@@ -15,6 +15,7 @@ type UpdateCategoryProps = {
         category_name: string;
         category_type: string;
         category_image: string;
+        category_tag: string[];
     }
 }
 const UpdateCategory = ({ data }: { data: UpdateCategoryProps }) => {
@@ -27,7 +28,8 @@ const UpdateCategory = ({ data }: { data: UpdateCategoryProps }) => {
         values: {
             category_name: data?.categories?.category_name,
             category_type: data?.categories?.category_type,
-            category_image: data?.categories?.category_image
+            category_image: data?.categories?.category_image,
+            category_tag: data?.categories?.category_tag,
         },
         resolver: zodResolver(categorySchema),
     });
