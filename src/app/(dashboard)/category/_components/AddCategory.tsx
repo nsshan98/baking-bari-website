@@ -222,7 +222,6 @@ const AddCategory = () => {
                                                 type="checkbox"
                                                 value={"Test"}
                                                 checked={field.value.includes("Test")}
-                                                defaultChecked
                                                 onChange={(e) => {
                                                     const value = e.currentTarget.checked ? [...field.value, e.currentTarget.value] : field.value.filter((value) => value !== e.currentTarget.value)
                                                     field.onChange(value)

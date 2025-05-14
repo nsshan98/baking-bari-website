@@ -47,7 +47,7 @@ const useUpdateCategory = (categoryId: string) => {
     const queryClient = useQueryClient()
     const updateCategory = useMutation({
         mutationFn: async (data: { category_name: string }) => {
-            return await axiosClient.patch(`/category/${categoryId}`, data)
+            return await axiosClient.patch(`/category-update/${categoryId}`, data)
         },
         onSettled: () => {
             queryClient.invalidateQueries({

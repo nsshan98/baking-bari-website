@@ -19,7 +19,6 @@ type UpdateCategoryProps = {
     }
 }
 const UpdateCategory = ({ data }: { data: UpdateCategoryProps }) => {
-    console.log(data)
     const [previewImage, setPreviewImage] = useState<string | null>();
     const fileRef = useRef<HTMLInputElement | null>(null);
     const { updateCategory } = useUpdateCategory(data?.categories?._id);
@@ -44,19 +43,21 @@ const UpdateCategory = ({ data }: { data: UpdateCategoryProps }) => {
                 "Content-Type": "multipart/form-data",
             },
         });
-        console.log(res, 'img res')
+        // console.log(res, 'img res')
         // if (res.status === 200) {
         const categoryItem = {
             category_name: data.category_name,
             category_type: data.category_type,
             category_image: res.data.data.display_url,
+            category_tag: data.category_tag,
         };
+        console.log(categoryItem, 'categoryItem')
         updateCategory.mutate(categoryItem, {
             onSuccess: () => {
-                console.log('Updated')
+                console.log(categoryItem, 'Updated')
             }
         })
-        toast.success("Category Created Successfully")
+        toast.success("Category Updated Successfully")
         // }
     };
     return (
@@ -66,7 +67,7 @@ const UpdateCategory = ({ data }: { data: UpdateCategoryProps }) => {
             >
                 <div className="">
                     <h2 className="text-center font-bold text-2xl">
-                        Add New Category
+                        Update Category
                     </h2>
 
                     <div className="form-control">
@@ -206,6 +207,41 @@ const UpdateCategory = ({ data }: { data: UpdateCategoryProps }) => {
                                         </label>
                                     )}
                                 </>
+                            )}
+                        />
+                    </div>
+
+                    <div className="form-control">
+                        <Controller
+                            name="category_tag"
+                            control={control}
+                            render={({ field, fieldState: { error } }) => (
+                                <div className="form-control">
+                                    <label className="label">
+                                        <span className="label-text">Category Name</span>
+                                    </label>
+                                    <input
+                                        {...field}
+                                        className="checkbox"
+                                        type="checkbox"
+                                        value={"Test"}
+                                        checked={field.value.includes("Test")}
+                                        onChange={(e) => {
+                                            const value = e.currentTarget.checked ? [...new Set([...field.value, e.currentTarget.value])] : field.value.filter((value) => value !== e.currentTarget.value)
+                                            field.onChange(value)
+                                        }}
+
+
+
+                                    />
+                                    {error && (
+                                        <label className="label">
+                                            <span className="label-text-alt text-error">
+                                                {error.message}
+                                            </span>
+                                        </label>
+                                    )}
+                                </div>
                             )}
                         />
                     </div>

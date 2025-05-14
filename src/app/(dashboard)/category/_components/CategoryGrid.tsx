@@ -37,6 +37,9 @@ const CategoryGrid = ({ category }: { category: CategoryProps }) => {
                     alt={category_name}
                     width={50}
                     height={50}
+                    priority
+                    className="rounded-lg object-cover"
+
                 />
                 <div className="flex flex-col gap-1">
                     <div>{category_name}</div>
