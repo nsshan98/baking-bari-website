@@ -1,17 +1,17 @@
 "use client";
-import { axiosClient } from "@/lib/axiosClient";
 import {
     categorySchema,
     CategorySchemaType,
 } from "@/schema-types/category-types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
 import Image from "next/image";
 import React, { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { CiCircleRemove } from "react-icons/ci";
 import { HiOutlineUpload } from "react-icons/hi";
+import { useCreateCategory } from "@/hooks/custom/categoryQuery";
+import { isAxiosError } from "axios";
 
 const AddCategory = () => {
     const [previewImage, setPreviewImage] = useState<string | null>();
@@ -33,27 +33,33 @@ const AddCategory = () => {
         resolver: zodResolver(categorySchema),
     });
 
-    const image_upload_key = process.env.NEXT_PUBLIC_IMAGE_HOSTING_KEY;
-    const imageUploadUrl = `https://api.imgbb.com/1/upload?key=${image_upload_key}`;
+    const { createCategory } = useCreateCategory()
+
+    const getFormData = (data: CategorySchemaType) => {
+        const formData = new FormData()
+        formData.append('category_name', data.category_name)
+        formData.append('category_type', data.category_type)
+        formData.append('category_image', data.category_image)
+        data.category_tag.forEach((tag) => formData.append('category_tag', tag))
+
+        return formData
+    }
 
     const onSubmit = async (data: CategorySchemaType) => {
-        const imageList = { image: data.category_image };
-        const res = await axios.post(imageUploadUrl, imageList, {
-            headers: {
-                "Content-Type": "multipart/form-data",
+        const formData = getFormData(data)
+
+        createCategory.mutate(formData, {
+            onSuccess: () => {
+                toast.success("Category created successfully")
+                closeModel()
             },
-        });
-        if (res.status === 200) {
-            const categoryItem = {
-                category_name: data.category_name,
-                category_type: data.category_type,
-                category_image: res.data.data.display_url,
-                category_tag: data.category_tag
-            };
-            await axiosClient.post("/create-category", categoryItem);
-            toast.success("Category Created Successfully");
-            console.log(categoryItem);
-        }
+            onError: (error) => {
+                if (isAxiosError(error)) {
+                    toast.error(error?.response?.data?.message)
+                }
+            }
+        })
+
     };
     return (
         <div>

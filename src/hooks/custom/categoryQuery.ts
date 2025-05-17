@@ -1,14 +1,22 @@
 import { axiosClient } from "@/lib/axiosClient";
-import { CategorySchemaType } from "@/schema-types/category-types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AxiosError } from "axios";
 
 // Create a new category
 const useCreateCategory = () => {
-    const createCategory = useMutation<CategorySchemaType, AxiosError>({
-        mutationFn: async () => {
-            return await axiosClient.post("/create-category");
+    const queryClient = useQueryClient()
+    const createCategory = useMutation({
+        mutationFn: async (data: FormData) => {
+            return await axiosClient.post("/create-category", data, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
         },
+        onSettled: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['categories']
+            })
+        }
     });
     return { createCategory };
 };
@@ -46,8 +54,12 @@ const useDeleteCategory = () => {
 const useUpdateCategory = (categoryId: string) => {
     const queryClient = useQueryClient()
     const updateCategory = useMutation({
-        mutationFn: async (data: { category_name: string }) => {
-            return await axiosClient.patch(`/category-update/${categoryId}`, data)
+        mutationFn: async (data: FormData) => {
+            return await axiosClient.patch(`/category-update/${categoryId}`, data, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            })
         },
         onSettled: () => {
             queryClient.invalidateQueries({

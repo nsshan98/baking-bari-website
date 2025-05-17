@@ -5,13 +5,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "i.ibb.co",
-        port: "",
-        search: "",
-      },
-      {
-        protocol: "https",
-        hostname: "i.ibb.co.com",
+        hostname: "res.cloudinary.com",
         port: "",
         search: "",
       },

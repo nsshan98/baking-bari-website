@@ -1,64 +1,66 @@
 "use client";
-import { categorySchema, CategorySchemaType } from "@/schema-types/category-types";
+import { updateCategorySchema, UpdateCategorySchemaType } from "@/schema-types/category-types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
 import React, { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { CiCircleRemove } from "react-icons/ci";
 import Image from "next/image";
 import { useUpdateCategory } from "@/hooks/custom/categoryQuery";
+import { isAxiosError } from "axios";
 
 type UpdateCategoryProps = {
-    categories: {
-        _id: string
-        category_name: string;
-        category_type: string;
-        category_image: string;
-        category_tag: string[];
-    }
+    _id: string
+    category_name: string;
+    category_type: string;
+    category_image: {
+        url: string;
+        public_id: string;
+    };
+    category_tag: string[];
 }
 const UpdateCategory = ({ data }: { data: UpdateCategoryProps }) => {
     const [previewImage, setPreviewImage] = useState<string | null>();
     const fileRef = useRef<HTMLInputElement | null>(null);
-    const { updateCategory } = useUpdateCategory(data?.categories?._id);
+    const { updateCategory } = useUpdateCategory(data?._id);
 
-    const { control, handleSubmit } = useForm<CategorySchemaType>({
+    console.log(data)
+
+    const { control, handleSubmit } = useForm<UpdateCategorySchemaType>({
         values: {
-            category_name: data?.categories?.category_name,
-            category_type: data?.categories?.category_type,
-            category_image: data?.categories?.category_image,
-            category_tag: data?.categories?.category_tag,
+            category_name: data?.category_name || "",
+            category_type: data?.category_type || "",
+            category_image: data?.category_image.url || "",
+            category_tag: data?.category_tag || "",
         },
-        resolver: zodResolver(categorySchema),
+        resolver: zodResolver(updateCategorySchema),
     });
 
-    const image_upload_key = process.env.NEXT_PUBLIC_IMAGE_HOSTING_KEY;
-    const imageUploadUrl = `https://api.imgbb.com/1/upload?key=${image_upload_key}`;
 
-    const onSubmit = async (data: CategorySchemaType) => {
-        const imageList = { image: data.category_image };
-        const res = await axios.post(imageUploadUrl, imageList, {
-            headers: {
-                "Content-Type": "multipart/form-data",
+    const getFormData = (data: UpdateCategorySchemaType) => {
+        const formData = new FormData()
+        formData.append('category_name', data.category_name)
+        formData.append('category_type', data.category_type)
+        formData.append('category_image', data.category_image)
+        data.category_tag.forEach((tag) => formData.append('category_tag', tag))
+
+        return formData
+    }
+
+    const onSubmit = async (data: UpdateCategorySchemaType) => {
+        const formData = getFormData(data)
+
+        updateCategory.mutate(formData, {
+            onSuccess: (res) => {
+                console.log(res)
+                toast.success("Category updated successfully")
             },
-        });
-        // console.log(res, 'img res')
-        // if (res.status === 200) {
-        const categoryItem = {
-            category_name: data.category_name,
-            category_type: data.category_type,
-            category_image: res.data.data.display_url,
-            category_tag: data.category_tag,
-        };
-        console.log(categoryItem, 'categoryItem')
-        updateCategory.mutate(categoryItem, {
-            onSuccess: () => {
-                console.log(categoryItem, 'Updated')
+            onError: (error) => {
+                if (isAxiosError(error)) {
+                    toast.error(error?.response?.data?.message)
+                }
             }
         })
-        toast.success("Category Updated Successfully")
-        // }
     };
     return (
         <div>
@@ -189,7 +191,7 @@ const UpdateCategory = ({ data }: { data: UpdateCategoryProps }) => {
                                                 className="flex items-center justify-center w-24 h-full rounded ring mt-2"
                                             >
                                                 <Image
-                                                    src={data.categories.category_image}
+                                                    src={data.category_image.url}
                                                     alt="preview"
                                                     width={100}
                                                     height={100}
@@ -248,7 +250,7 @@ const UpdateCategory = ({ data }: { data: UpdateCategoryProps }) => {
 
                     {/* Submit Button */}
                     <button type="submit" className="btn btn-success w-full mt-5">
-                        Add Category
+                        Update Category
                     </button>
                 </div>
             </form>

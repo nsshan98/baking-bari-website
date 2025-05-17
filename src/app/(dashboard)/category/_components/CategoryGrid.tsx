@@ -11,7 +11,10 @@ type CategoryProps = {
     _id: string;
     category_name: string;
     category_type: string;
-    category_image: string | File;
+    category_image: {
+        url: string,
+        public_id: string;
+    };
     open: boolean;
 }
 
@@ -24,16 +27,19 @@ const CategoryGrid = ({ category }: { category: CategoryProps }) => {
     const { _id, category_name, category_type, category_image } = category
     const router = useRouter()
 
+    console.log(category)
+
 
     return (
         <div className="flex justify-between items-center bg-base-200 rounded-lg">
             <div className="p-2 flex gap-2 items-center justify-between">
                 <Image
-                    src={typeof category_image === "string"
-                        ? category_image
-                        : category_image instanceof File
-                            ? URL.createObjectURL(category_image)
-                            : "https://placehold.co/100x100"}
+                    // src={typeof category_image === "string"
+                    //     ? category_image
+                    //     : category_image instanceof File
+                    //         ? URL.createObjectURL(category_image)
+                    //         : "https://placehold.co/100x100"}
+                    src={category_image?.url}
                     alt={category_name}
                     width={50}
                     height={50}
