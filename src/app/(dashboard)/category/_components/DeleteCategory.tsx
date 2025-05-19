@@ -1,6 +1,8 @@
 import DeleteModal from '@/components/ui/DeleteModal'
 import { useDeleteCategory } from '@/hooks/custom/categoryQuery'
+import { isAxiosError } from 'axios'
 import React from 'react'
+import { toast } from 'react-toastify'
 
 type DeleteCategoryProps = {
     category_id: string
@@ -13,16 +15,16 @@ const DeleteCategory = ({ category_id, open, onClose }: DeleteCategoryProps) => 
 
     const handleDeleteCategory = () => {
         deleteCategory.mutate(category_id, {
-            onSuccess: (response) => {
-                console.log(response)
-                console.log("Category deleted successfully")
+            onSuccess: () => {
+                toast.success("Category deleted successfully")
             },
             onError: (error) => {
-                console.error("Error deleting category:", error)
+                if (isAxiosError(error)) {
+                    toast.error(error.response?.data.message)
+                }
             }
 
         })
-        console.log(category_id)
     }
     return (
         <div>

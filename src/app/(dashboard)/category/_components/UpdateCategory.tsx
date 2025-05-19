@@ -24,13 +24,12 @@ const UpdateCategory = ({ data }: { data: UpdateCategoryProps }) => {
     const fileRef = useRef<HTMLInputElement | null>(null);
     const { updateCategory } = useUpdateCategory(data?._id);
 
-    console.log(data)
 
     const { control, handleSubmit } = useForm<UpdateCategorySchemaType>({
         values: {
             category_name: data?.category_name || "",
             category_type: data?.category_type || "",
-            category_image: data?.category_image.url || "",
+            category_image: data?.category_image?.url || "",
             category_tag: data?.category_tag || "",
         },
         resolver: zodResolver(updateCategorySchema),
@@ -191,7 +190,7 @@ const UpdateCategory = ({ data }: { data: UpdateCategoryProps }) => {
                                                 className="flex items-center justify-center w-24 h-full rounded ring mt-2"
                                             >
                                                 <Image
-                                                    src={data.category_image.url}
+                                                    src={data.category_image?.url}
                                                     alt="preview"
                                                     width={100}
                                                     height={100}

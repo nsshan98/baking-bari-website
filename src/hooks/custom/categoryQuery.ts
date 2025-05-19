@@ -6,7 +6,7 @@ const useCreateCategory = () => {
     const queryClient = useQueryClient()
     const createCategory = useMutation({
         mutationFn: async (data: FormData) => {
-            return await axiosClient.post("/create-category", data, {
+            return await axiosClient.post("/category/create-category", data, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
@@ -26,7 +26,7 @@ const useShowCategories = () => {
     const showCategories = useQuery({
         queryKey: ["categories"],
         queryFn: async () => {
-            const { data } = await axiosClient.get("/category");
+            const { data } = await axiosClient.get("/category/show-category");
             return data;
         },
         retry: false,
@@ -39,7 +39,7 @@ const useDeleteCategory = () => {
     const queryClient = useQueryClient()
     const deleteCategory = useMutation({
         mutationFn: async (categoryId: string) => {
-            return await axiosClient.delete(`/category/${categoryId}`)
+            return await axiosClient.delete(`/category/delete-category/${categoryId}`)
         },
         onSettled: () => {
             queryClient.invalidateQueries({
@@ -55,7 +55,7 @@ const useUpdateCategory = (categoryId: string) => {
     const queryClient = useQueryClient()
     const updateCategory = useMutation({
         mutationFn: async (data: FormData) => {
-            return await axiosClient.patch(`/category-update/${categoryId}`, data, {
+            return await axiosClient.patch(`/category/category-update${categoryId}`, data, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
